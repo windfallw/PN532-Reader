@@ -19,16 +19,25 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
         self.gridLayout.setObjectName("gridLayout")
-        self.openSerial = QtWidgets.QPushButton(self.centralwidget)
-        self.openSerial.setObjectName("openSerial")
-        self.gridLayout.addWidget(self.openSerial, 0, 1, 1, 1)
+        self.port = QtWidgets.QComboBox(self.centralwidget)
+        self.port.setEditable(False)
+        self.port.setObjectName("port")
+        self.gridLayout.addWidget(self.port, 1, 0, 1, 1)
         self.serialPrint = QtWidgets.QTextBrowser(self.centralwidget)
         self.serialPrint.setObjectName("serialPrint")
-        self.gridLayout.addWidget(self.serialPrint, 1, 0, 1, 2)
-        self.allSerialPort = QtWidgets.QComboBox(self.centralwidget)
-        self.allSerialPort.setEditable(False)
-        self.allSerialPort.setObjectName("allSerialPort")
-        self.gridLayout.addWidget(self.allSerialPort, 0, 0, 1, 1)
+        self.gridLayout.addWidget(self.serialPrint, 3, 0, 1, 3)
+        self.openSer = QtWidgets.QPushButton(self.centralwidget)
+        self.openSer.setObjectName("openSer")
+        self.gridLayout.addWidget(self.openSer, 1, 2, 1, 1)
+        self.baud_label = QtWidgets.QLabel(self.centralwidget)
+        self.baud_label.setObjectName("baud_label")
+        self.gridLayout.addWidget(self.baud_label, 0, 1, 1, 1)
+        self.baud = QtWidgets.QComboBox(self.centralwidget)
+        self.baud.setObjectName("baud")
+        self.gridLayout.addWidget(self.baud, 1, 1, 1, 1)
+        self.port_label = QtWidgets.QLabel(self.centralwidget)
+        self.port_label.setObjectName("port_label")
+        self.gridLayout.addWidget(self.port_label, 0, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -46,18 +55,21 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-        MainWindow.setTabOrder(self.openSerial, self.serialPrint)
+        MainWindow.setTabOrder(self.port, self.baud)
+        MainWindow.setTabOrder(self.baud, self.openSer)
+        MainWindow.setTabOrder(self.openSer, self.serialPrint)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.openSerial.setText(_translate("MainWindow", "打开串口"))
         self.serialPrint.setToolTip(_translate("MainWindow", "<html><head/><body><p><br/></p></body></html>"))
-        self.serialPrint.setHtml(_translate("MainWindow",
-                                            "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-                                            "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-                                            "p, li { white-space: pre-wrap; }\n"
-                                            "</style></head><body style=\" font-family:\'SimSun\'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
-                                            "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
+        self.serialPrint.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'SimSun\'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
+        self.openSer.setText(_translate("MainWindow", "打开"))
+        self.baud_label.setText(_translate("MainWindow", "波特率"))
+        self.port_label.setText(_translate("MainWindow", "串口"))
         self.menu.setTitle(_translate("MainWindow", "菜单"))
         self.actionOpenFile.setText(_translate("MainWindow", "打开文件"))
