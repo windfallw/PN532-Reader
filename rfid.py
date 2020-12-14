@@ -1,5 +1,6 @@
 import serial
 import serial.tools.list_ports
+import sqlite3
 import time
 
 readonlyCard = b'\x43\xBC\x0B\x01\x02\x03\x86\x85\x03\xC7\xBD'
@@ -32,18 +33,12 @@ class RFID_YES:
     def close(self):
         self.ser.close()
 
-    # ser.write(readonlyCard)
-    # s = ser.readall()
-    # print(s)
+    def readOnlyCard(self):
+        self.ser.write(readonlyCard)
 
-    # ser.write(HF14443_find)
-    # s = ser.readall()
-    # print(s)
-    # ser.write(HF14443_conflict)
-    # s = ser.readall()
-    # print(s)
-    # ser.write(HF14443_select)
-    # s = ser.readall()
-    # print(s)
-
-    # ser.close()
+    def HF14443(self):
+        self.ser.write(HF14443_find)
+        time.sleep(0.001)
+        self.ser.write(HF14443_conflict)
+        time.sleep(0.001)
+        self.ser.write(HF14443_select)
