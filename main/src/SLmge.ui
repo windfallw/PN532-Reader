@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>644</width>
-    <height>405</height>
+    <width>562</width>
+    <height>471</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,6 +15,27 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
+    <item row="2" column="4">
+     <widget class="QPushButton" name="read14443">
+      <property name="text">
+       <string>HF14443读卡</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="5">
+     <widget class="QPushButton" name="showSql">
+      <property name="text">
+       <string>查看数据库</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QComboBox" name="port">
+      <property name="editable">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
     <item row="0" column="0">
      <widget class="QLabel" name="port_label">
       <property name="text">
@@ -22,6 +43,13 @@
       </property>
       <property name="buddy">
        <cstring>port</cstring>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="3">
+     <widget class="QPushButton" name="read125k">
+      <property name="text">
+       <string>125K只读卡</string>
       </property>
      </widget>
     </item>
@@ -35,46 +63,18 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="0">
-     <widget class="QComboBox" name="port">
-      <property name="editable">
-       <bool>false</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QComboBox" name="baud"/>
-    </item>
-    <item row="1" column="2">
+    <item row="2" column="2">
      <widget class="QPushButton" name="openSer">
       <property name="text">
        <string>打开</string>
       </property>
      </widget>
     </item>
-    <item row="1" column="3">
-     <widget class="QPushButton" name="read125k">
-      <property name="text">
-       <string>125K只读卡</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="4">
-     <widget class="QPushButton" name="read14443">
-      <property name="text">
-       <string>HF14443读卡</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="5">
-     <widget class="QPushButton" name="showSql">
-      <property name="text">
-       <string>查看数据库</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0" colspan="6">
+    <item row="3" column="0" colspan="6">
      <widget class="QTextBrowser" name="serialPrint"/>
+    </item>
+    <item row="2" column="1">
+     <widget class="QComboBox" name="baud"/>
     </item>
    </layout>
   </widget>
@@ -84,8 +84,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>644</width>
-     <height>23</height>
+     <width>562</width>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
@@ -93,6 +93,7 @@
      <string>菜单</string>
     </property>
     <addaction name="actionabout"/>
+    <addaction name="actionsql"/>
    </widget>
    <addaction name="menu"/>
   </widget>
@@ -101,10 +102,14 @@
     <string>关于</string>
    </property>
   </action>
+  <action name="actionsql">
+   <property name="text">
+    <string>查看数据库</string>
+   </property>
+  </action>
  </widget>
  <tabstops>
   <tabstop>port</tabstop>
-  <tabstop>baud</tabstop>
   <tabstop>openSer</tabstop>
   <tabstop>read125k</tabstop>
   <tabstop>read14443</tabstop>

@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QFileDialog
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QWidget, QFileDialog
 from PyQt5.QtCore import QTimer, QThread
 from PyQt5.QtGui import QIcon, QTextCursor
 from src.SLmge import *
@@ -11,13 +11,10 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         super(MyMainWindow, self).__init__(parent)
         self.setupUi(self)
 
-        self.port.addItems(device.dev_list)
-        device.ser.port = self.port.currentText()
+        self.refreshPORTList()
         self.port.currentIndexChanged.connect(self.changeSER)
 
-        self.baud.addItems(device.bd_list)
-        self.baud.setCurrentIndex(2)
-        device.ser.baudrate = int(self.baud.currentText())
+        self.refreshBDList()
         self.baud.currentIndexChanged.connect(self.changeBR)
 
         self.openSer.clicked.connect(self.openSER)
@@ -28,6 +25,17 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.read14443.setAutoRepeat(False)
         self.read14443.clicked.connect(self.find14443)
 
+    def refreshBDList(self):
+        self.baud.clear()
+        self.baud.addItems(device.bd_list)
+        self.baud.setCurrentIndex(2)
+        device.ser.baudrate = int(self.baud.currentText())
+
+    def refreshPORTList(self):
+        self.port.clear()
+        self.port.addItems(device.dev_list)
+        device.ser.port = self.port.currentText()
+
     def changeSER(self):
         device.ser.port = self.port.currentText()
         print(device.ser.port)
@@ -37,17 +45,25 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         print(device.ser.baudrate)
 
     def openSER(self):
-        self.openSer.setEnabled(False)
-        device.open()
-        work.start()
+        if device.open():
+            self.openSer.setEnabled(False)
+            work.start()
+        else:
+            QMessageBox.critical(self, '错误', '打开串口失败')
         # self.openSer.setCheckable(True)
         # print(self.openSer.isChecked())
 
     def find125k(self):
-        device.readOnlyCard()
+        if device.ser.isOpen():
+            device.readOnlyCard()
+        else:
+            QMessageBox.information(self, '提示', '请先打开串口')
 
     def find14443(self):
-        device.HF14443()
+        if device.ser.isOpen():
+            device.HF14443()
+        else:
+            QMessageBox.information(self, '提示', '请先打开串口')
 
 
 class WorkThread(QThread):

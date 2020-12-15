@@ -1,6 +1,6 @@
 import serial
 import serial.tools.list_ports
-import sqlite3
+
 import time
 
 readonlyCard = b'\x43\xBC\x0B\x01\x02\x03\x86\x85\x03\xC7\xBD'
@@ -28,7 +28,15 @@ class RFID_YES:
 
     def open(self):
         print(self.ser.port, self.ser.baudrate)
-        self.ser.open()
+        if self.ser.isOpen():
+            return False
+        else:
+            try:
+                self.ser.open()
+            except Exception as e:
+                print('error:', e)
+                return False
+            return True
 
     def close(self):
         self.ser.close()
