@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QWidget, QFileDialog
-from PyQt5.QtCore import QTimer, QThread, pyqtSignal
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QInputDialog
+from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtGui import QIcon, QTextCursor
 from rfid import RFID_YES, time
 from src.SLmge import *
@@ -12,12 +12,10 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         super(MyMainWindow, self).__init__(parent)
         self.setupUi(self)
         self.work = WorkThread()
+        self.work.trigger.connect(self.whichCard)
 
         self.refreshPORTList()
         self.refreshBDList()
-
-        # self.work.trigger125.connect()
-        # self.work.trigger14443.connect()
 
         self.port.currentIndexChanged.connect(self.changeSER)
         self.baud.currentIndexChanged.connect(self.changeBR)
@@ -66,19 +64,37 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         else:
             QMessageBox.information(self, '提示', '请先打开串口')
 
-    def throwErr(self, func, err=None):
-        try:
-            func()
-        except Exception as e:
-            if err:
-                QMessageBox.critical(self, '错误', err)
+    def whichCard(self, data):
+        # try:
+        if data.startswith(b'C\xbc\x12\x01\x02\n\x86\x00\x01') and len(data) == 18:
+            cardID = data[10:14].hex()
+            self.serialPrint.moveCursor(QTextCursor.End)
+            self.serialPrint.append(str(cardID))
+            if findSQL(cardID):
+                QMessageBox.information(self, '125k只读卡', '卡号: %s' % cardID)
             else:
-                QMessageBox.critical(self, '错误', str(e))
+                QInputDialog.getText(self, 'Text Input Dialog', '输入姓名：')
+
+        elif data.startswith(b'C\xbc\x0c\x02') and len(data) == 12:
+            cardID = data[6:10].hex()
+            self.serialPrint.moveCursor(QTextCursor.End)
+            self.serialPrint.append(str(cardID))
+            if findSQL(cardID):
+                QMessageBox.information(self, 'HF14443卡', '卡号: %s' % cardID)
+            else:
+                QInputDialog.getText(self, 'Text Input Dialog', '输入姓名：')
+
+        elif data.startswith(b'C\xbc\x12\x01\x02\n\x86\x14\x01') and len(data) == 18:
+            QMessageBox.critical(self, '错误', '125k只读卡读卡失败')
+
+        else:
+            pass
+        # except Exception as e:
+        #     print(e)
 
 
 class WorkThread(QThread):
-    trigger125 = pyqtSignal(bytes)
-    trigger14443 = pyqtSignal(bytes)
+    trigger = pyqtSignal(bytes)
 
     def __init__(self, parent=None):
         super(WorkThread, self).__init__(parent)
@@ -93,12 +109,12 @@ class WorkThread(QThread):
         while True:
             data = device.ser.readall()
             if data != b'':
-                content = data.decode("utf-8", "replace")  # ignore or replace
-                win.serialPrint.moveCursor(QTextCursor.End)
-                win.serialPrint.insertPlainText(content)
-                self.trigger125.emit(data)
-                self.trigger14443.emit(data)
+                # content = data.decode("utf-8", "replace")  # ignore or replace
                 # print(content, end='')
+                # win.serialPrint.insertPlainText(content)
+                win.serialPrint.moveCursor(QTextCursor.End)
+                win.serialPrint.append(str(data))
+                self.trigger.emit(data)
             time.sleep(0.005)
 
 

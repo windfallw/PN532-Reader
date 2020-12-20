@@ -1,6 +1,6 @@
-import serial
 import serial.tools.list_ports
-
+import struct
+import serial
 import time
 
 readonlyCard = b'\x43\xBC\x0B\x01\x02\x03\x86\x85\x03\xC7\xBD'
@@ -46,7 +46,7 @@ class RFID_YES:
 
     def HF14443(self):
         self.ser.write(HF14443_find)
-        time.sleep(0.001)
+        time.sleep(1)
         self.ser.write(HF14443_conflict)
-        time.sleep(0.001)
-        self.ser.write(HF14443_select)
+        # time.sleep(1)
+        # self.ser.write(HF14443_select)
