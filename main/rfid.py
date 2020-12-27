@@ -10,6 +10,10 @@ HF14443_select = b'\x43\xBC\x08\x02\x01\x04\xDF\x0B'
 
 
 class RFID_YES:
+    pn532_wake = b'\x55\x55\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xff\x03\xfd\xd4\x14\x01\x17\x00'
+    pn532_res_wake = b'\x00\x00\xff\x00\xff\x00\x00\x00\xff\x02\xfe\xd5\x15\x16\x00'
+    pn532_find = b'\x00\x00\xff\x04\xfc\xd4\x4a\x01\x00\xe1\x00'
+
     bd_list = ['2400', '4800', '9600', '19200', '38400', '57600', '115200']
     port_list = []
     dev_list = []
@@ -44,9 +48,15 @@ class RFID_YES:
     def readOnlyCard(self):
         self.ser.write(readonlyCard)
 
-    def HF14443(self):
+    def hf14443(self):
         self.ser.write(HF14443_find)
         time.sleep(1)
         self.ser.write(HF14443_conflict)
-        # time.sleep(1)
-        # self.ser.write(HF14443_select)
+        time.sleep(1)
+        self.ser.write(HF14443_select)
+
+    def pn532WakeUp(self):
+        self.ser.write(self.pn532_wake)
+
+    def pn532find(self):
+        self.ser.write(self.pn532_find)

@@ -12,7 +12,8 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         super(MyMainWindow, self).__init__(parent)
         self.setupUi(self)
         self.work = WorkThread()
-        self.work.trigger.connect(self.whichCard)
+        self.work.trigger_byte.connect(self.printByte)
+        self.work.trigger_str.connect(self.printStr)
 
         self.refreshPORTList()
         self.refreshBDList()
@@ -27,7 +28,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         if not device.ser.isOpen():
             self.baud.clear()
             self.baud.addItems(device.bd_list)
-            self.baud.setCurrentIndex(2)
+            self.baud.setCurrentIndex(6)
             device.ser.baudrate = int(self.baud.currentText())
 
     def refreshPORTList(self):
@@ -60,41 +61,22 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
 
     def find14443(self):
         if device.ser.isOpen():
-            device.HF14443()
+            device.pn532find()
         else:
             QMessageBox.information(self, '提示', '请先打开串口')
 
-    def whichCard(self, data):
-        # try:
-        if data.startswith(b'C\xbc\x12\x01\x02\n\x86\x00\x01') and len(data) == 18:
-            cardID = data[10:14].hex()
-            self.serialPrint.moveCursor(QTextCursor.End)
-            self.serialPrint.append(str(cardID))
-            if findSQL(cardID):
-                QMessageBox.information(self, '125k只读卡', '卡号: %s' % cardID)
-            else:
-                QInputDialog.getText(self, 'Text Input Dialog', '输入姓名：')
+    def printByte(self, data):
+        self.serialPrint.moveCursor(QTextCursor.End)
+        self.serialPrint.append(data.hex(' '))
 
-        elif data.startswith(b'C\xbc\x0c\x02') and len(data) == 12:
-            cardID = data[6:10].hex()
-            self.serialPrint.moveCursor(QTextCursor.End)
-            self.serialPrint.append(str(cardID))
-            if findSQL(cardID):
-                QMessageBox.information(self, 'HF14443卡', '卡号: %s' % cardID)
-            else:
-                QInputDialog.getText(self, 'Text Input Dialog', '输入姓名：')
-
-        elif data.startswith(b'C\xbc\x12\x01\x02\n\x86\x14\x01') and len(data) == 18:
-            QMessageBox.critical(self, '错误', '125k只读卡读卡失败')
-
-        else:
-            pass
-        # except Exception as e:
-        #     print(e)
+    def printStr(self, data):
+        self.serialPrint.moveCursor(QTextCursor.End)
+        self.serialPrint.append(data)
 
 
 class WorkThread(QThread):
-    trigger = pyqtSignal(bytes)
+    trigger_byte = pyqtSignal(bytes)
+    trigger_str = pyqtSignal(str)
 
     def __init__(self, parent=None):
         super(WorkThread, self).__init__(parent)
@@ -106,15 +88,14 @@ class WorkThread(QThread):
         self.wait()
 
     def run(self):
+        device.pn532WakeUp()
+        if device.ser.readall() == device.pn532_res_wake:
+            self.trigger_str.emit('wake up PN532 successfully .')
         while True:
             data = device.ser.readall()
             if data != b'':
-                # content = data.decode("utf-8", "replace")  # ignore or replace
-                # print(content, end='')
-                # win.serialPrint.insertPlainText(content)
-                win.serialPrint.moveCursor(QTextCursor.End)
-                win.serialPrint.append(str(data))
-                self.trigger.emit(data)
+                self.trigger_byte.emit(data)
+
             time.sleep(0.005)
 
 
