@@ -15,7 +15,6 @@ conn.commit()
 
 def getSQL():
     result = sqlite.execute('''select * from student;''')
-    print(result.fetchall())
     return result.fetchall()
 
 
@@ -55,4 +54,4 @@ def removeSQL(ID):
     conn.commit()
 
 
-getSQL()
+print(getSQL())

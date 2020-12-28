@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QDialog, QWidget
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QDialog, QWidget, QTableWidgetItem
 from PyQt5.QtCore import QThread, pyqtSignal, QCoreApplication
 from PyQt5.QtGui import QIcon, QTextCursor
 
@@ -17,10 +17,10 @@ class Dialog(QDialog, Ui_addUser):
         super(QDialog, self).__init__(parent)
         self.setModal(True)
         self.setupUi(self)
-        self.dialog_true.clicked.connect(self.click_Sure)
+        self.dialog_true.clicked.connect(self.click_true)
         self.dialog_false.clicked.connect(self.close)
 
-    def click_Sure(self):
+    def click_true(self):
         if self.userName.text() and self.userNumber.text() and self.major.text() != '':
             ID = self.CardID.text()
             name = self.userName.text()
@@ -45,6 +45,18 @@ class Database(QWidget, Ui_showData):
         self.tableDialog_true.clicked.connect(self.close)
         self.tableDialog_false.clicked.connect(self.close)
 
+    def refresh(self):
+        data = getSQL()
+        self.dataTable.clearContents()
+        self.dataTable.setRowCount(0)
+        for row, items in enumerate(data):
+            self.dataTable.insertRow(row)
+            for col, item in enumerate(items):
+                self.dataTable.setItem(row, col, QTableWidgetItem(item))
+
+    def click_true(self):
+        ...
+
 
 class MyMainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
@@ -63,7 +75,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.openSer.clicked.connect(self.openSER)
         self.read125k.clicked.connect(self.find125k)
         self.read14443.clicked.connect(self.find14443)
-        self.showSql.clicked.connect(database.show)
+        self.showSql.clicked.connect(self.showSQL)
 
     def refreshBDList(self):
         if not device.ser.isOpen():
@@ -123,6 +135,10 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         else:
             dialog.CardID.setText(msg)
             dialog.show()
+
+    def showSQL(self):
+        database.refresh()
+        database.show()
 
 
 class WorkThread(QThread):
