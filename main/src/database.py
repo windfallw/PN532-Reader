@@ -47,7 +47,7 @@ class Ui_showData(object):
 
     def retranslateUi(self, showData):
         _translate = QtCore.QCoreApplication.translate
-        showData.setWindowTitle(_translate("showData", "Form"))
+        showData.setWindowTitle(_translate("showData", "后台数据库"))
         self.tableDialog_false.setText(_translate("showData", "取消"))
         self.tableDialog_true.setText(_translate("showData", "确定"))
         item = self.dataTable.horizontalHeaderItem(0)

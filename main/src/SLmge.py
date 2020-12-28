@@ -77,7 +77,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "主程序"))
         self.read14443.setText(_translate("MainWindow", "HF14443读卡"))
         self.showSql.setText(_translate("MainWindow", "查看数据库"))
         self.port_label.setText(_translate("MainWindow", "串口"))

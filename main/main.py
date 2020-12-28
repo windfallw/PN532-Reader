@@ -1,10 +1,21 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QInputDialog
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QDialog, QWidget
 from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtGui import QIcon, QTextCursor
-from rfid import RFID_YES, time
+
 from src.SLmge import *
+from src.dialog import *
+from src.database import *
+
+from rfid import RFID, time
 from sql import *
+
 import sys
+
+
+class Dialog(QDialog, Ui_addUser):
+    def __init__(self, parent=None):
+        super(QDialog, self).__init__(parent)
+        self.setupUi(self)
 
 
 class MyMainWindow(QMainWindow, Ui_MainWindow):
@@ -24,6 +35,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.openSer.clicked.connect(self.openSER)
         self.read125k.clicked.connect(self.find125k)
         self.read14443.clicked.connect(self.find14443)
+        self.showSql.clicked.connect(dialog.show)
 
     def refreshBDList(self):
         if not device.ser.isOpen():
@@ -109,11 +121,12 @@ class WorkThread(QThread):
             time.sleep(0.005)
 
 
-device = RFID_YES()
+device = RFID()
 
 app = QApplication(sys.argv)
 app.setWindowIcon(QIcon("icon.svg"))
 
+dialog = Dialog()
 win = MyMainWindow()
 win.show()
 
