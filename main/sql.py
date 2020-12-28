@@ -16,13 +16,18 @@ conn.commit()
 def getSQL():
     result = sqlite.execute('''select * from student;''')
     print(result.fetchall())
-    return result
+    return result.fetchall()
 
 
 def findSQL(ID):
     result = sqlite.execute('''SELECT COUNT(*)
         FROM student WHERE id='{}';'''.format(ID))
-    return result.fetchone()[0]
+    if result.fetchone()[0]:
+        result = sqlite.execute('''SELECT *
+        FROM student WHERE id='{}';'''.format(ID))
+        return result.fetchone()
+    else:
+        return 0
 
 
 def insertSQL(ID, name, number, sex='null', major='null'):

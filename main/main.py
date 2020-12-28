@@ -116,9 +116,13 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.serialPrint.append(data)
 
     def showMsg(self, msg):
-        QMessageBox.information(self, 'HF14443卡', '卡号: %s' % msg)
-        dialog.CardID.setText(msg)
-        dialog.show()
+        result = findSQL(msg)
+        if findSQL(msg):
+            searchResult = '卡号: {}\n姓名: {}\n学号: {}\n性别: {}\n专业: {}'.format(*result)
+            QMessageBox.information(self, '已登记', searchResult)
+        else:
+            dialog.CardID.setText(msg)
+            dialog.show()
 
 
 class WorkThread(QThread):
