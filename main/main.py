@@ -14,6 +14,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.work = WorkThread()
         self.work.trigger_byte.connect(self.printByte)
         self.work.trigger_str.connect(self.printStr)
+        self.work.trigger_Msg.connect(self.showMsg)
 
         self.refreshPORTList()
         self.refreshBDList()
@@ -74,10 +75,14 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.serialPrint.moveCursor(QTextCursor.End)
         self.serialPrint.append(data)
 
+    def showMsg(self, msg):
+        QMessageBox.information(self, 'HF14443卡', '卡号: %s' % msg)
+
 
 class WorkThread(QThread):
     trigger_byte = pyqtSignal(bytes)
     trigger_str = pyqtSignal(str)
+    trigger_Msg = pyqtSignal(str)
 
     def __init__(self, parent=None):
         super(WorkThread, self).__init__(parent)
@@ -98,7 +103,8 @@ class WorkThread(QThread):
                 res = data.replace(b'\x00\x00\xff\x00\xff\x00', b'')
                 self.trigger_byte.emit(res)
                 if res.startswith(b'\x00\x00\xff\x0c\xf4\xd5K\x01\x01\x00\x04\x08\x04') and res.endswith(b'\x00'):
-                    self.trigger_byte.emit(res[13:-2])
+                    cardID = res[13:-2].hex().upper()
+                    self.trigger_Msg.emit(str(cardID))
 
             time.sleep(0.005)
 

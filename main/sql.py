@@ -6,7 +6,7 @@ print("Opened database successfully")
 sqlite = conn.cursor()
 sqlite.execute('''CREATE TABLE if not exists student
        (id    text      PRIMARY KEY NOT NULL,
-       name   text(10)  NOT NULL,
+       name   text(10)  UNIQUE  NOT NULL,
        number char(10)  NOT NULL,
        sex    text(10),
        major  text(10));''')
