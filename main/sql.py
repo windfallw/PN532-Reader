@@ -5,11 +5,11 @@ conn = sqlite3.connect('rfid.db')
 print("Opened database successfully")
 sqlite = conn.cursor()
 sqlite.execute('''CREATE TABLE if not exists student
-       (id    text      PRIMARY KEY NOT NULL,
-       name   text(10)  UNIQUE  NOT NULL,
-       number char(10)  NOT NULL,
-       sex    text(10),
-       major  text(10));''')
+       (id    varchar(25)  PRIMARY KEY NOT NULL,
+       name   varchar(50)  UNIQUE  NOT NULL,
+       number varchar(15)  NOT NULL,
+       sex    varchar(10),
+       major  varchar(50));''')
 conn.commit()
 
 
@@ -19,18 +19,23 @@ def getSQL():
     return result
 
 
-def findSQL(id):
+def findSQL(ID):
     result = sqlite.execute('''SELECT COUNT(*)
-        FROM student WHERE id='{}';'''.format(id))
+        FROM student WHERE id='{}';'''.format(ID))
     return result.fetchone()[0]
 
 
 def insertSQL(ID, name, number, sex='null', major='null'):
-    query = '''insert into student(id,name,number,sex,major)
-    values ({0},{1},{2},{3},{4});'''.format(ID, name, number, sex, major)
-    print(query)
-    sqlite.execute(query)
-    conn.commit()
+    try:
+        query = '''insert into student(id,name,number,sex,major)
+        values ('{0}','{1}','{2}','{3}','{4}');'''.format(ID, name, number, sex, major)
+        print(query)
+        sqlite.execute(query)
+        conn.commit()
+        return False
+    except Exception as err:
+        print(err)
+        return err
 
 
 def updateSQL(ID, name, number, sex='null', major='null'):

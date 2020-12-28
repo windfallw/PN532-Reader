@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QDialog, QWidget
-from PyQt5.QtCore import QThread, pyqtSignal
+from PyQt5.QtCore import QThread, pyqtSignal, QCoreApplication
 from PyQt5.QtGui import QIcon, QTextCursor
 
 from src.SLmge import *
@@ -15,7 +15,35 @@ import sys
 class Dialog(QDialog, Ui_addUser):
     def __init__(self, parent=None):
         super(QDialog, self).__init__(parent)
+        self.setModal(True)
         self.setupUi(self)
+        self.dialog_true.clicked.connect(self.click_Sure)
+        self.dialog_false.clicked.connect(self.close)
+
+    def click_Sure(self):
+        if self.userName.text() and self.userNumber.text() and self.major.text() != '':
+            ID = self.CardID.text()
+            name = self.userName.text()
+            number = self.userNumber.text()
+            sex = self.sex.currentText()
+            major = self.major.text()
+            result = insertSQL(ID, name, number, sex, major)
+            if result:
+                QMessageBox.critical(self, '错误', str(result))
+                return
+            QMessageBox.information(self, '提示', '插入成功')
+            self.close()
+        else:
+            QMessageBox.critical(self, '错误', '每一个字段都不能为空！')
+
+
+class Database(QWidget, Ui_showData):
+    def __init__(self, parent=None):
+        super(QWidget, self).__init__(parent)
+        # self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint) 窗口置顶
+        self.setupUi(self)
+        self.tableDialog_true.clicked.connect(self.close)
+        self.tableDialog_false.clicked.connect(self.close)
 
 
 class MyMainWindow(QMainWindow, Ui_MainWindow):
@@ -25,7 +53,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.work = WorkThread()
         self.work.trigger_byte.connect(self.printByte)
         self.work.trigger_str.connect(self.printStr)
-        self.work.trigger_Msg.connect(self.showMsg)
+        self.work.trigger_find.connect(self.showMsg)
 
         self.refreshPORTList()
         self.refreshBDList()
@@ -35,7 +63,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.openSer.clicked.connect(self.openSER)
         self.read125k.clicked.connect(self.find125k)
         self.read14443.clicked.connect(self.find14443)
-        self.showSql.clicked.connect(dialog.show)
+        self.showSql.clicked.connect(database.show)
 
     def refreshBDList(self):
         if not device.ser.isOpen():
@@ -89,12 +117,14 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
 
     def showMsg(self, msg):
         QMessageBox.information(self, 'HF14443卡', '卡号: %s' % msg)
+        dialog.CardID.setText(msg)
+        dialog.show()
 
 
 class WorkThread(QThread):
     trigger_byte = pyqtSignal(bytes)
     trigger_str = pyqtSignal(str)
-    trigger_Msg = pyqtSignal(str)
+    trigger_find = pyqtSignal(str)
 
     def __init__(self, parent=None):
         super(WorkThread, self).__init__(parent)
@@ -116,7 +146,7 @@ class WorkThread(QThread):
                 self.trigger_byte.emit(res)
                 if res.startswith(b'\x00\x00\xff\x0c\xf4\xd5K\x01\x01\x00\x04\x08\x04') and res.endswith(b'\x00'):
                     cardID = res[13:-2].hex().upper()
-                    self.trigger_Msg.emit(str(cardID))
+                    self.trigger_find.emit(str(cardID))
 
             time.sleep(0.005)
 
@@ -127,6 +157,8 @@ app = QApplication(sys.argv)
 app.setWindowIcon(QIcon("icon.svg"))
 
 dialog = Dialog()
+database = Database()
+
 win = MyMainWindow()
 win.show()
 
