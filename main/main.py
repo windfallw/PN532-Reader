@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QDialog, QWidget, QTableWidgetItem
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QDialog, QWidget, QTableWidget, QTableWidgetItem
 from PyQt5.QtCore import QThread, pyqtSignal, QCoreApplication
 from PyQt5.QtGui import QIcon, QTextCursor
 
@@ -37,12 +37,12 @@ class Dialog(QDialog, Ui_addUser):
             QMessageBox.critical(self, '错误', '每一个字段都不能为空！')
 
 
-class Database(QWidget, Ui_showData):
+class Database(QTableWidget, Ui_showData):
     def __init__(self, parent=None):
-        super(QWidget, self).__init__(parent)
+        super(QTableWidget, self).__init__(parent)
         # self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint) 窗口置顶
         self.setupUi(self)
-        self.tableDialog_true.clicked.connect(self.close)
+        self.tableDialog_true.clicked.connect(self.click_true)
         self.tableDialog_false.clicked.connect(self.close)
 
     def refresh(self):
@@ -55,7 +55,18 @@ class Database(QWidget, Ui_showData):
                 self.dataTable.setItem(row, col, QTableWidgetItem(item))
 
     def click_true(self):
-        ...
+        rows = self.dataTable.rowCount()
+        cols = self.dataTable.columnCount()
+        for row in range(rows):
+            rowData = []
+            for col in range(cols):
+                rowData.append(self.dataTable.item(row, col).text())
+            result = updateSQL(*rowData)
+            if result:
+                QMessageBox.critical(self, '错误', str(result))
+                return
+        self.refresh()
+        QMessageBox.information(self, '提示', '所有数据已更新')
 
 
 class MyMainWindow(QMainWindow, Ui_MainWindow):

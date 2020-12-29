@@ -26,7 +26,7 @@ def findSQL(ID):
         FROM student WHERE id='{}';'''.format(ID))
         return result.fetchone()
     else:
-        return 0
+        return False
 
 
 def insertSQL(ID, name, number, sex='null', major='null'):
@@ -43,9 +43,14 @@ def insertSQL(ID, name, number, sex='null', major='null'):
 
 
 def updateSQL(ID, name, number, sex='null', major='null'):
-    sqlite.execute('''update student set  name={0},number={1},sex={2},major={3}
-    where id='{4}';'''.format(name, number, sex, major, ID))
-    conn.commit()
+    try:
+        sqlite.execute('''update student set  name='{}',number='{}',sex='{}',major='{}'
+        where id='{}';'''.format(name, number, sex, major, ID))
+        conn.commit()
+        return False
+    except Exception as err:
+        print(err)
+        return err
 
 
 def removeSQL(ID):
