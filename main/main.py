@@ -9,6 +9,7 @@ from src.database import *
 from rfid import RFID
 from sql import *
 
+import icon
 import time
 import sys
 
@@ -218,7 +219,7 @@ class WorkThread(QThread):
 device = RFID()
 
 app = QApplication(sys.argv)
-app.setWindowIcon(QIcon("icon.svg"))
+app.setWindowIcon(QIcon(":/icon.svg"))
 
 dialog = Dialog()
 database = Database()

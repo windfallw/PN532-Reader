@@ -16,4 +16,5 @@
 # b'C\xbc\x08\x02\x01\x01\x88\xa6'
 # b'C\xbc\x08\x02\x01\x01\x88\xa6'
 
-pyinstaller -F ./main/main.py
+pyrcc5 -o ./main/icon.py ./icon/icon.qrc
+pyinstaller -F -w ./main/main.py -i ./icon/icon.ico
