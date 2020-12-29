@@ -95,6 +95,8 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.refreshBDList()
 
         self.port.currentIndexChanged.connect(self.changeSER)
+        self.port.popupAboutToBeShown.connect(self.refreshPORTList)
+
         self.baud.currentIndexChanged.connect(self.changeBR)
         self.openSer.clicked.connect(self.openSER)
         self.wakeUP.clicked.connect(self.wakePN532)
@@ -110,6 +112,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
             device.ser.baudrate = int(self.baud.currentText())
 
     def refreshPORTList(self):
+        device.getSerial()
         self.port.clear()
         self.port.addItems(device.dev_list)
         device.ser.port = self.port.currentText()

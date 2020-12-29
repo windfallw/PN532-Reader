@@ -25,7 +25,7 @@ class Ui_MainWindow(object):
         self.showSQL = QtWidgets.QPushButton(self.centralwidget)
         self.showSQL.setObjectName("showSQL")
         self.gridLayout.addWidget(self.showSQL, 2, 5, 1, 1)
-        self.port = QtWidgets.QComboBox(self.centralwidget)
+        self.port = ComboBox(self.centralwidget)
         self.port.setEditable(False)
         self.port.setObjectName("port")
         self.gridLayout.addWidget(self.port, 2, 0, 1, 1)
@@ -52,7 +52,7 @@ class Ui_MainWindow(object):
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
         self.menuBar = QtWidgets.QMenuBar(MainWindow)
-        self.menuBar.setGeometry(QtCore.QRect(0, 0, 605, 22))
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 605, 26))
         self.menuBar.setObjectName("menuBar")
         self.menu = QtWidgets.QMenu(self.menuBar)
         self.menu.setObjectName("menu")
@@ -87,3 +87,4 @@ class Ui_MainWindow(object):
         self.menu.setTitle(_translate("MainWindow", "菜单"))
         self.actionAbout.setText(_translate("MainWindow", "关于"))
         self.actionSQL.setText(_translate("MainWindow", "查看数据库"))
+from ComboBox import ComboBox

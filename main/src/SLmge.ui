@@ -30,7 +30,7 @@
      </widget>
     </item>
     <item row="2" column="0">
-     <widget class="QComboBox" name="port">
+     <widget class="ComboBox" name="port">
       <property name="editable">
        <bool>false</bool>
       </property>
@@ -85,7 +85,7 @@
      <x>0</x>
      <y>0</y>
      <width>605</width>
-     <height>22</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
@@ -108,6 +108,13 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ComboBox</class>
+   <extends>QComboBox</extends>
+   <header>ComboBox.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>port</tabstop>
   <tabstop>openSer</tabstop>

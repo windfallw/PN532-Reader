@@ -13,7 +13,6 @@ class RFID:
 
     def __init__(self, baudrate=9600, timeout=0.5):
         self.ser = serial.Serial(port=None, baudrate=baudrate, timeout=timeout)
-        self.getSerial()
 
     def getSerial(self):
         dev = []
