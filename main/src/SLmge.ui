@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>562</width>
+    <width>605</width>
     <height>471</height>
    </rect>
   </property>
@@ -18,12 +18,12 @@
     <item row="2" column="4">
      <widget class="QPushButton" name="read14443">
       <property name="text">
-       <string>HF14443读卡</string>
+       <string>读卡</string>
       </property>
      </widget>
     </item>
     <item row="2" column="5">
-     <widget class="QPushButton" name="showSql">
+     <widget class="QPushButton" name="showSQL">
       <property name="text">
        <string>查看数据库</string>
       </property>
@@ -47,9 +47,9 @@
      </widget>
     </item>
     <item row="2" column="3">
-     <widget class="QPushButton" name="read125k">
+     <widget class="QPushButton" name="wakeUP">
       <property name="text">
-       <string>125K只读卡</string>
+       <string>唤醒</string>
       </property>
      </widget>
     </item>
@@ -84,25 +84,25 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>562</width>
-     <height>22</height>
+     <width>605</width>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
     <property name="title">
      <string>菜单</string>
     </property>
-    <addaction name="actionabout"/>
-    <addaction name="actionsql"/>
+    <addaction name="actionAbout"/>
+    <addaction name="actionSQL"/>
    </widget>
    <addaction name="menu"/>
   </widget>
-  <action name="actionabout">
+  <action name="actionAbout">
    <property name="text">
     <string>关于</string>
    </property>
   </action>
-  <action name="actionsql">
+  <action name="actionSQL">
    <property name="text">
     <string>查看数据库</string>
    </property>
@@ -111,9 +111,9 @@
  <tabstops>
   <tabstop>port</tabstop>
   <tabstop>openSer</tabstop>
-  <tabstop>read125k</tabstop>
+  <tabstop>wakeUP</tabstop>
   <tabstop>read14443</tabstop>
-  <tabstop>showSql</tabstop>
+  <tabstop>showSQL</tabstop>
   <tabstop>serialPrint</tabstop>
  </tabstops>
  <resources/>

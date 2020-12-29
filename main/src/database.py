@@ -14,14 +14,14 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_showData(object):
     def setupUi(self, showData):
         showData.setObjectName("showData")
-        showData.resize(543, 392)
+        showData.resize(733, 543)
         self.gridLayout_2 = QtWidgets.QGridLayout(showData)
         self.gridLayout_2.setObjectName("gridLayout_2")
         self.gridLayout = QtWidgets.QGridLayout()
         self.gridLayout.setObjectName("gridLayout")
-        self.tableDialog_false = QtWidgets.QPushButton(showData)
-        self.tableDialog_false.setObjectName("tableDialog_false")
-        self.gridLayout.addWidget(self.tableDialog_false, 1, 1, 1, 1)
+        self.delData = QtWidgets.QPushButton(showData)
+        self.delData.setObjectName("delData")
+        self.gridLayout.addWidget(self.delData, 1, 1, 1, 1)
         self.tableDialog_true = QtWidgets.QPushButton(showData)
         self.tableDialog_true.setObjectName("tableDialog_true")
         self.gridLayout.addWidget(self.tableDialog_true, 1, 0, 1, 1)
@@ -39,7 +39,10 @@ class Ui_showData(object):
         self.dataTable.setHorizontalHeaderItem(3, item)
         item = QtWidgets.QTableWidgetItem()
         self.dataTable.setHorizontalHeaderItem(4, item)
-        self.gridLayout.addWidget(self.dataTable, 0, 0, 1, 2)
+        self.gridLayout.addWidget(self.dataTable, 0, 0, 1, 3)
+        self.tableDialog_false = QtWidgets.QPushButton(showData)
+        self.tableDialog_false.setObjectName("tableDialog_false")
+        self.gridLayout.addWidget(self.tableDialog_false, 1, 2, 1, 1)
         self.gridLayout_2.addLayout(self.gridLayout, 0, 0, 1, 1)
 
         self.retranslateUi(showData)
@@ -48,8 +51,8 @@ class Ui_showData(object):
     def retranslateUi(self, showData):
         _translate = QtCore.QCoreApplication.translate
         showData.setWindowTitle(_translate("showData", "后台数据库"))
-        self.tableDialog_false.setText(_translate("showData", "取消"))
-        self.tableDialog_true.setText(_translate("showData", "确定"))
+        self.delData.setText(_translate("showData", "删库"))
+        self.tableDialog_true.setText(_translate("showData", "保存"))
         item = self.dataTable.horizontalHeaderItem(0)
         item.setText(_translate("showData", "卡号"))
         item = self.dataTable.horizontalHeaderItem(1)
@@ -60,3 +63,4 @@ class Ui_showData(object):
         item.setText(_translate("showData", "性别"))
         item = self.dataTable.horizontalHeaderItem(4)
         item.setText(_translate("showData", "专业"))
+        self.tableDialog_false.setText(_translate("showData", "关闭"))

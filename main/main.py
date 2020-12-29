@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QDialog, QWidget, QTableWidget, QTableWidgetItem
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QDialog, QTableWidget, QTableWidgetItem, QWidget
 from PyQt5.QtCore import QThread, pyqtSignal, QCoreApplication
 from PyQt5.QtGui import QIcon, QTextCursor
 
@@ -6,9 +6,10 @@ from src.SLmge import *
 from src.dialog import *
 from src.database import *
 
-from rfid import RFID, time
+from rfid import RFID
 from sql import *
 
+import time
 import sys
 
 
@@ -44,6 +45,10 @@ class Database(QTableWidget, Ui_showData):
         self.setupUi(self)
         self.tableDialog_true.clicked.connect(self.click_true)
         self.tableDialog_false.clicked.connect(self.close)
+        self.delData.clicked.connect(self.removeData)
+
+    def removeData(self):
+        ...
 
     def refresh(self):
         data = getSQL()
@@ -84,9 +89,9 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.port.currentIndexChanged.connect(self.changeSER)
         self.baud.currentIndexChanged.connect(self.changeBR)
         self.openSer.clicked.connect(self.openSER)
-        self.read125k.clicked.connect(self.find125k)
+        self.wakeUP.clicked.connect(self.wakePN532)
         self.read14443.clicked.connect(self.find14443)
-        self.showSql.clicked.connect(self.showSQL)
+        self.showSQL.clicked.connect(self.showSQLData)
 
     def refreshBDList(self):
         if not device.ser.isOpen():
@@ -117,7 +122,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         # self.openSer.setCheckable(True)
         # print(self.openSer.isChecked())
 
-    def find125k(self):
+    def wakePN532(self):
         if device.ser.isOpen():
             device.readOnlyCard()
         else:
@@ -147,7 +152,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
             dialog.CardID.setText(msg)
             dialog.show()
 
-    def showSQL(self):
+    def showSQLData(self):
         database.refresh()
         database.show()
 
