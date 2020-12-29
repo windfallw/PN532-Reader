@@ -25,15 +25,11 @@ class RFID:
 
     def open(self):
         print(self.ser.port, self.ser.baudrate)
-        if self.ser.isOpen():
+        try:
+            self.ser.open()
             return False
-        else:
-            try:
-                self.ser.open()
-            except Exception as e:
-                print('error:', e)
-                return False
-            return True
+        except Exception as err:
+            return err
 
     def close(self):
         self.ser.close()

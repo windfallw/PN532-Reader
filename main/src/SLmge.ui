@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="2" column="4">
-     <widget class="QPushButton" name="read14443">
+     <widget class="QPushButton" name="readCard">
       <property name="text">
        <string>读卡</string>
       </property>
@@ -85,7 +85,7 @@
      <x>0</x>
      <y>0</y>
      <width>605</width>
-     <height>26</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
@@ -112,7 +112,7 @@
   <tabstop>port</tabstop>
   <tabstop>openSer</tabstop>
   <tabstop>wakeUP</tabstop>
-  <tabstop>read14443</tabstop>
+  <tabstop>readCard</tabstop>
   <tabstop>showSQL</tabstop>
   <tabstop>serialPrint</tabstop>
  </tabstops>

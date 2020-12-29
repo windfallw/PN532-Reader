@@ -89,6 +89,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.work.trigger_byte.connect(self.printByte)
         self.work.trigger_str.connect(self.printStr)
         self.work.trigger_find.connect(self.showMsg)
+        self.work.trigger_err.connect(self.Error)
 
         self.refreshPORTList()
         self.refreshBDList()
@@ -97,7 +98,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.baud.currentIndexChanged.connect(self.changeBR)
         self.openSer.clicked.connect(self.openSER)
         self.wakeUP.clicked.connect(self.wakePN532)
-        self.read14443.clicked.connect(self.find14443)
+        self.readCard.clicked.connect(self.findCard)
         self.showSQL.clicked.connect(self.showSQLData)
         self.actionSQL.triggered.connect(self.showSQLData)
 
@@ -122,13 +123,17 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         print(device.ser.baudrate)
 
     def openSER(self):
-        if device.open():
-            self.openSer.setEnabled(False)
-            self.work.start()
+        if device.ser.isOpen():
+            self.work.stop()
+            device.close()
+            self.openSer.setText('打开')
         else:
-            QMessageBox.critical(self, '错误', '打开串口失败')
-        # self.openSer.setCheckable(True)
-        # print(self.openSer.isChecked())
+            errmsg = device.open()
+            if errmsg:
+                QMessageBox.critical(self, '错误', str(errmsg))
+            else:
+                self.work.start()
+                self.openSer.setText('关闭')
 
     def wakePN532(self):
         if device.ser.isOpen():
@@ -136,7 +141,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         else:
             QMessageBox.information(self, '提示', '请先打开串口')
 
-    def find14443(self):
+    def findCard(self):
         if device.ser.isOpen():
             device.pn532find()
         else:
@@ -164,34 +169,47 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         database.refresh()
         database.show()
 
+    def Error(self, msg):
+        QMessageBox.critical(self, '错误', str(msg))
+        device.close()
+        self.openSer.setText('打开')
+
 
 class WorkThread(QThread):
     trigger_byte = pyqtSignal(bytes)
     trigger_str = pyqtSignal(str)
     trigger_find = pyqtSignal(str)
+    trigger_err = pyqtSignal(str)
+    working = False
 
     def __init__(self, parent=None):
         super(WorkThread, self).__init__(parent)
-        self.working = True
-        self.num = 0
 
     def __del__(self):
+        self.stop()
+
+    def stop(self):
         self.working = False
         self.wait()
 
     def run(self):
+        self.working = True
         device.pn532WakeUp()
-        while True:
-            data = device.ser.readall()
-            if data.startswith(b'\x00\x00\xff\x00\xff\x00') and len(data) > 6:
-                res = data.replace(b'\x00\x00\xff\x00\xff\x00', b'')
-                self.trigger_byte.emit(res)
-                if res.startswith(b'\x00\x00\xff\x0c\xf4\xd5K\x01\x01\x00\x04\x08\x04') and res.endswith(b'\x00'):
-                    cardID = res[13:-2].hex().upper()
-                    self.trigger_find.emit(str(cardID))
-                elif res == device.pn532_res_wake:
-                    self.trigger_str.emit('wake up PN532 successfully .')
-            time.sleep(0.005)
+        while self.working:
+            try:
+                data = device.ser.readall()
+                if data.startswith(b'\x00\x00\xff\x00\xff\x00') and len(data) > 6:
+                    res = data.replace(b'\x00\x00\xff\x00\xff\x00', b'')
+                    self.trigger_byte.emit(res)
+                    if res.startswith(b'\x00\x00\xff\x0c\xf4\xd5K\x01\x01\x00\x04\x08\x04') and res.endswith(b'\x00'):
+                        cardID = res[13:-2].hex().upper()
+                        self.trigger_find.emit(str(cardID))
+                    elif res == device.pn532_res_wake:
+                        self.trigger_str.emit('wake up PN532 successfully .')
+                time.sleep(0.005)
+            except Exception as err:
+                self.trigger_err.emit(str(err))
+                self.stop()
 
 
 device = RFID()
