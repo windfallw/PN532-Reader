@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QDialog, QTableWidget, QTableWidgetItem, QWidget
-from PyQt5.QtCore import QThread, pyqtSignal, QCoreApplication
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtGui import QIcon, QTextCursor
 
 from src.SLmge import *
@@ -48,7 +48,14 @@ class Database(QTableWidget, Ui_showData):
         self.delData.clicked.connect(self.removeData)
 
     def removeData(self):
-        ...
+        items = getIdSQL()
+        select = QInputDialog.getItem(self, "删除记录", '卡号', items, 0, False)
+        result = removeSQL(select[0])
+        if result:
+            QMessageBox.critical(self, '错误', str(result))
+        else:
+            QMessageBox.information(self, '提示', '删除卡号: %s 成功' % select[0])
+            self.refresh()
 
     def refresh(self):
         data = getSQL()
@@ -92,6 +99,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.wakeUP.clicked.connect(self.wakePN532)
         self.read14443.clicked.connect(self.find14443)
         self.showSQL.clicked.connect(self.showSQLData)
+        self.actionSQL.triggered.connect(self.showSQLData)
 
     def refreshBDList(self):
         if not device.ser.isOpen():
@@ -124,7 +132,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
 
     def wakePN532(self):
         if device.ser.isOpen():
-            device.readOnlyCard()
+            device.pn532WakeUp()
         else:
             QMessageBox.information(self, '提示', '请先打开串口')
 
@@ -173,8 +181,6 @@ class WorkThread(QThread):
 
     def run(self):
         device.pn532WakeUp()
-        if device.ser.readall() == device.pn532_res_wake:
-            self.trigger_str.emit('wake up PN532 successfully .')
         while True:
             data = device.ser.readall()
             if data.startswith(b'\x00\x00\xff\x00\xff\x00') and len(data) > 6:
@@ -183,7 +189,8 @@ class WorkThread(QThread):
                 if res.startswith(b'\x00\x00\xff\x0c\xf4\xd5K\x01\x01\x00\x04\x08\x04') and res.endswith(b'\x00'):
                     cardID = res[13:-2].hex().upper()
                     self.trigger_find.emit(str(cardID))
-
+                elif res == device.pn532_res_wake:
+                    self.trigger_str.emit('wake up PN532 successfully .')
             time.sleep(0.005)
 
 

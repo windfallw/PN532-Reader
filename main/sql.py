@@ -18,6 +18,14 @@ def getSQL():
     return result.fetchall()
 
 
+def getIdSQL():
+    result = sqlite.execute('''select id from student''')
+    data = []
+    for Id in result:
+        data.append(Id[0])
+    return data
+
+
 def findSQL(ID):
     result = sqlite.execute('''SELECT COUNT(*)
         FROM student WHERE id='{}';'''.format(ID))
@@ -54,9 +62,14 @@ def updateSQL(ID, name, number, sex='null', major='null'):
 
 
 def removeSQL(ID):
-    sqlite.execute('''delete from student
-    where id='{0}';'''.format(ID))
-    conn.commit()
+    try:
+        sqlite.execute('''delete from student
+        where id='{0}';'''.format(ID))
+        conn.commit()
+        return False
+    except Exception as err:
+        print(err)
+        return err
 
 
 print(getSQL())

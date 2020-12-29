@@ -92,8 +92,8 @@
     <property name="title">
      <string>菜单</string>
     </property>
-    <addaction name="actionAbout"/>
     <addaction name="actionSQL"/>
+    <addaction name="actionAbout"/>
    </widget>
    <addaction name="menu"/>
   </widget>
