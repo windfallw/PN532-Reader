@@ -34,7 +34,7 @@
 
 - 程序的入口为`main.py`;
 - 打开项目文件夹执行`python ./main/main.py`。
-- 使用IDE打开
+- 或使用IDE打开
 
 ### 打包
 
