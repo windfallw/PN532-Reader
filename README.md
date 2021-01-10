@@ -1,5 +1,9 @@
 # 基于PN532的信息管理系统
 
+因为时间仓促，这是一个仅实现了PN532读卡ID功能的学生信息管理系统。
+
+**PN532的强大之处完全没有体现出来**
+
 ```
 ├─main.spec （pyinstaller打包时会自动生成的配置文件）
 ├─README.md (部署说明)
@@ -48,11 +52,11 @@
 
    该文件夹存放了所有的项目源代码
 
-      **src文件夹**
+   **src文件夹**
 
-      存放了使用`QtDesign`设计的三个页面。
+   存放了使用`QtDesign`设计的三个页面。
 
-      运行`tool.py`能够自动将当前目录下的所有`ui`文件转换为`.py`
+   运行`tool.py`能够自动将当前目录下的所有`ui`文件转换为`.py`
 
     - `main.py`做为主程序的入口，继承了`src`文件夹中的三个图形界面的类。
 
@@ -71,6 +75,16 @@
     - 如要替换logo请在项目根目录下执行
 
       `pyrcc5 -o ./main/icon.py ./icon/icon.qrc`
+
+## 其它
+
+图标来自[iconfont](https://www.iconfont.cn/)和[iconscout](https://iconscout.com/)
+
+![logo](.\icon\icon.svg)
+
+<a href="https://iconscout.com/icons/cid-no" target="_blank">cid no</a> by <a href="https://iconscout.com/contributors/pocike">Alpár - Etele Méder</a> on <a href="https://iconscout.com">Iconscout</a>
+
+![icon](.\icon\icon.ico)
 
 
 
