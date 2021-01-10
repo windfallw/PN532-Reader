@@ -80,11 +80,11 @@
 
 图标来自[iconfont](https://www.iconfont.cn/)和[iconscout](https://iconscout.com/)
 
-![logo](.\icon\icon.svg)
+![logo](./icon/icon.svg)
 
 <a href="https://iconscout.com/icons/cid-no" target="_blank">cid no</a> by <a href="https://iconscout.com/contributors/pocike">Alpár - Etele Méder</a> on <a href="https://iconscout.com">Iconscout</a>
 
-![icon](.\icon\icon.ico)
+![icon](./icon/icon.ico)
 
 
 
